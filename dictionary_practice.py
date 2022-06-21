@@ -24,7 +24,7 @@ Read the NBA finals CSV data into one more more dictionaries as needed to comple
 
 [x] Write a function that takes as an argument a year and returns the winner of the NBA finals that year.
 [x] Write a function that takes as an argument a team name and returns an array of all of the years the team has won the NBA finals.
-[ ] Which teams have made it to the NBA finals but have never won?
+[x] Which teams have made it to the NBA finals but have never won?
 [ ] Print out a ranking of who has won the MVP more than once, by times one, e.g. this output:
     - 6 times: Michael Jordan
     - 3 times: Shaquille O'Neal, LeBron James
@@ -33,8 +33,8 @@ Read the NBA finals CSV data into one more more dictionaries as needed to comple
 
 
 
-def read_csv() -> Dict:
-    year_winner = {}
+def read_csv():
+    year_winner = []
     with open('nba_finals.csv', 'r') as file:
         index = 0
         for line in file.readlines():
@@ -42,15 +42,15 @@ def read_csv() -> Dict:
                 index += 1
                 continue
             items = line.split(',')
-            year_winner[items[0]] = items[1]
+            year_winner.append(items[4])
             index += 1
 
     
     return year_winner
 
 
-def read_csv_2() -> Dict:
-    losers = {}
+def read_csv_2():
+    losers = set()
     with open('nba_finals.csv', 'r') as file:
         index = 0
         for line in file.readlines():
@@ -58,7 +58,7 @@ def read_csv_2() -> Dict:
                 index += 1
                 continue
             items = line.split(',')
-            losers[items[0]] = items[2]
+            losers.add(items[2].strip())
             index += 1
             
     return losers
@@ -69,10 +69,25 @@ def read_csv_2() -> Dict:
 
 year_winner = read_csv()
 losers = read_csv_2()
+pprint(year_winner)
+
 
 def winner(year) -> str:
     return year_winner[year]
 
-print(winner('1995'))
-pprint(year_winner)
-pprint(losers)
+
+def mvp_tally():
+    mvps = {}
+    for winner in year_winner:
+        if winner in mvps:
+            mvps[winner] += 1
+        else:
+            mvps[winner] = 1
+
+    for mvp, times_won in mvps.items():
+        if times_won > 1:
+            print(f"{times_won} times: {mvp}")
+    return mvps
+
+mvp_tally()
+
